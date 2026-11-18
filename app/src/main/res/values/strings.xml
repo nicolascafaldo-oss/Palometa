@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Palometa</string>
+    <string name="app_tagline">Mobile APK Smali Decompiler, Leak Scanner &amp; Ghidra Workstation Prep</string>
+    <string name="action_open_apk">Browse Storage &amp; APKs</string>
+    <string name="action_inspect_self">Inspect Built-in Demo APK (Self)</string>
+    <string name="action_switch_apk">Load Another APK</string>
+    <string name="action_save_bundle">Save Bundle (.zip)</string>
+    <string name="action_share_bundle">Share to Workstation</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_back">Back</string>
+    <string name="nav_overview">Overview</string>
+    <string name="nav_dex">Smali &amp; DEX</string>
+    <string name="nav_elf">Native ELF</string>
+    <string name="nav_inspect">Strings &amp; Hex</string>
+    <string name="nav_export">Export</string>
+    <string name="empty_title">Palometa Reverse Workbench</string>
+    <string name="empty_subtitle">Decompile Dalvik DEX into syntax-highlighted Smali, scan printable strings for potential leaks, inspect native .so ELF sections, and export a Ghidra-ready desktop bundle offline.</string>
+    <string name="parsing_in_progress">Parsing APK &amp; scanning strings…</string>
+    <string name="exporting_in_progress">Building Ghidra workstation bundle…</string>
+    <string name="error_parse_generic">Could not parse the selected APK file.</string>
+    <string name="cd_toggle_theme">Toggle dark or light theme</string>
+    <string name="cd_open_apk">Open APK file explorer</string>
+    <string name="cd_hero_illustration">APK binary decomposition to Ghidra desktop workstation illustration</string>
+</resources>
