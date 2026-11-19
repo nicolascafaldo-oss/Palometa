@@ -177,7 +177,7 @@ fun OverviewScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             SectionLabel(
-                                title = "Manifest Posture & Attack Surface",
+                                title = "Manifest & Permissions Summary",
                                 subtitle = "${manifest.permissions.size} permissions · ${manifest.components.size} components"
                             )
                         }

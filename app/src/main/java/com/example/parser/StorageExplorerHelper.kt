@@ -1,16 +1,28 @@
 package com.example.parser
 
+import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
 import android.provider.DocumentsContract
+import android.provider.MediaStore
+import com.example.model.DownloadApkItem
 import com.example.model.RecentApkItem
 import com.example.model.StorageDocumentItem
+import java.io.File
 
 object StorageExplorerHelper {
 
     private const val PREFS_NAME = "palometa_storage_prefs"
     private const val KEY_TREE_URI = "mounted_tree_uri"
     private const val KEY_RECENT_APKS = "recent_apks"
+
+    val DOWNLOADS_ROOT_URI: Uri =
+        Uri.parse("content://com.android.providers.downloads.documents/root/downloads")
+
+    val DOWNLOADS_DOCUMENT_URI: Uri =
+        Uri.parse("content://com.android.externalstorage.documents/document/primary%3ADownload")
 
     fun saveMountedTreeUri(context: Context, treeUri: Uri) {
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -30,6 +42,76 @@ object StorageExplorerHelper {
             .edit()
             .remove(KEY_TREE_URI)
             .apply()
+    }
+
+    fun scanAccessibleDownloads(context: Context): List<DownloadApkItem> {
+        val seenNames = HashSet<String>()
+        val results = mutableListOf<DownloadApkItem>()
+
+        // 1. Check MediaStore.Downloads (API 29+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            runCatching {
+                val projection = arrayOf(
+                    MediaStore.Downloads._ID,
+                    MediaStore.Downloads.DISPLAY_NAME,
+                    MediaStore.Downloads.SIZE
+                )
+                context.contentResolver.query(
+                    MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                    projection,
+                    null,
+                    null,
+                    "${MediaStore.Downloads.DATE_MODIFIED} DESC"
+                )?.use { cursor ->
+                    val idCol = cursor.getColumnIndexOrThrow(MediaStore.Downloads._ID)
+                    val nameCol = cursor.getColumnIndexOrThrow(MediaStore.Downloads.DISPLAY_NAME)
+                    val sizeCol = cursor.getColumnIndexOrThrow(MediaStore.Downloads.SIZE)
+                    while (cursor.moveToNext()) {
+                        val name = cursor.getString(nameCol) ?: continue
+                        if (!name.endsWith(".apk", ignoreCase = true)) continue
+                        val id = cursor.getLong(idCol)
+                        val size = cursor.getLong(sizeCol)
+                        val uri = ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI, id)
+                        if (seenNames.add("$name:$size")) {
+                            results.add(
+                                DownloadApkItem(
+                                    name = name,
+                                    uriString = uri.toString(),
+                                    filePath = null,
+                                    sizeBytes = size
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        // 2. Check standard Downloads directory if readable directly
+        runCatching {
+            @Suppress("DEPRECATION")
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            if (downloadsDir != null && downloadsDir.exists() && downloadsDir.canRead()) {
+                downloadsDir.listFiles()
+                    ?.filter { it.isFile && it.name.endsWith(".apk", ignoreCase = true) && it.canRead() }
+                    ?.sortedByDescending { it.lastModified() }
+                    ?.forEach { file ->
+                        val size = file.length()
+                        if (seenNames.add("${file.name}:$size")) {
+                            results.add(
+                                DownloadApkItem(
+                                    name = file.name,
+                                    uriString = null,
+                                    filePath = file.absolutePath,
+                                    sizeBytes = size
+                                )
+                            )
+                        }
+                    }
+            }
+        }
+
+        return results
     }
 
     fun listTreeChildren(

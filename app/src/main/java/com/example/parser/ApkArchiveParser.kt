@@ -61,6 +61,18 @@ object ApkArchiveParser {
         return parseFile(targetFile, displayName)
     }
 
+    fun parseFromFilePath(context: Context, filePath: String, displayName: String): LoadedApkSession {
+        val sourceFile = File(filePath)
+        require(sourceFile.exists() && sourceFile.canRead()) {
+            "Selected APK file cannot be read from storage."
+        }
+        val workspaceDir = File(context.cacheDir, "workspace").apply { mkdirs() }
+        workspaceDir.listFiles()?.forEach { it.delete() }
+        val targetFile = File(workspaceDir, "current_target.apk")
+        sourceFile.copyTo(targetFile, overwrite = true)
+        return parseFile(targetFile, displayName)
+    }
+
     fun parseSelfApk(context: Context): LoadedApkSession {
         val sourcePath = context.applicationInfo.sourceDir
         val sourceFile = File(sourcePath)
@@ -73,6 +85,12 @@ object ApkArchiveParser {
     }
 
     private fun parseFile(apkFile: File, displayName: String): LoadedApkSession {
+        require(apkFile.length() >= 4) { "Selected file is too small to be a valid .apk archive." }
+        val header = ByteArray(4)
+        apkFile.inputStream().use { it.read(header) }
+        require(header[0] == 0x50.toByte() && header[1] == 0x4B.toByte()) {
+            "'$displayName' is not a valid APK/ZIP archive."
+        }
         val startMs = System.currentTimeMillis()
         val fileSize = apkFile.length()
         val sha256 = BinaryFormatters.digestFile(apkFile, "SHA-256")

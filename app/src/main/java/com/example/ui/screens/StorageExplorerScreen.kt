@@ -28,10 +28,9 @@ import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.CreateNewFolder
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -53,6 +52,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.model.DownloadApkItem
 import com.example.model.StorageDocumentItem
 import com.example.parser.BinaryFormatters
 import com.example.ui.components.SectionLabel
@@ -66,9 +66,10 @@ import com.example.viewmodel.StorageExplorerState
 fun StorageExplorerOverlay(
     state: StorageExplorerState,
     onClose: () -> Unit,
+    onDownloadsPickerClick: () -> Unit,
     onMountFolderClick: () -> Unit,
-    onSystemFilePickerClick: () -> Unit,
     onInspectSelfClick: () -> Unit,
+    onSelectDownloadItem: (DownloadApkItem) -> Unit,
     onSelectRecentUri: (String) -> Unit,
     onEnterDirectory: (StorageDocumentItem) -> Unit,
     onSelectApkDocument: (StorageDocumentItem) -> Unit,
@@ -118,12 +119,12 @@ fun StorageExplorerOverlay(
                 }
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Device APK File Explorer",
+                        text = "Device APK & Downloads Browser",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = "Browse storage folders or pick an .apk package",
+                        text = "Pick an .apk from Downloads or browse a mounted folder",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -145,14 +146,29 @@ fun StorageExplorerOverlay(
                             verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             SectionLabel(
-                                title = "Storage Access",
-                                subtitle = "Mount a device directory (e.g. Downloads) or pick a single .apk file"
+                                title = "Select APK File",
+                                subtitle = "Use Pick from Downloads to choose any .apk in your Downloads folder"
                             )
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 Button(
+                                    onClick = onDownloadsPickerClick,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .heightIn(min = 48.dp)
+                                        .testTag("explorer_downloads_picker_button")
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Download,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text("Pick from Downloads")
+                                }
+                                OutlinedButton(
                                     onClick = onMountFolderClick,
                                     modifier = Modifier
                                         .weight(1f)
@@ -167,22 +183,12 @@ fun StorageExplorerOverlay(
                                     Spacer(modifier = Modifier.width(6.dp))
                                     Text(if (state.mountedTreeUri == null) "Mount Folder" else "Change Folder")
                                 }
-                                OutlinedButton(
-                                    onClick = onSystemFilePickerClick,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .heightIn(min = 48.dp)
-                                        .testTag("explorer_system_picker_button")
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.FolderOpen,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text("Quick Pick .apk")
-                                }
                             }
+                            Text(
+                                text = "Note: Android restricts folder-tree mounting on the root Downloads folder itself — tap 'Pick from Downloads' above to select .apk files directly from Downloads.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                             OutlinedButton(
                                 onClick = onInspectSelfClick,
                                 modifier = Modifier
@@ -197,6 +203,75 @@ fun StorageExplorerOverlay(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text("Inspect Built-in Demo APK (Palometa-self.apk)")
+                            }
+                        }
+                    }
+                }
+
+                if (state.downloadsApks.isNotEmpty()) {
+                    item {
+                        Column(
+                            modifier = Modifier.widthIn(max = 760.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Filled.Download,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "Downloads (.apk)",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                            state.downloadsApks.forEach { item ->
+                                TerminalCard(
+                                    onClick = { onSelectDownloadItem(item) },
+                                    modifier = Modifier.testTag("download_apk_${item.name}")
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(12.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.weight(1f)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Android,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(10.dp))
+                                            Column {
+                                                Text(
+                                                    text = item.name,
+                                                    style = MaterialTheme.typography.bodyLarge,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                                Text(
+                                                    text = BinaryFormatters.formatBytes(item.sizeBytes),
+                                                    style = MonoLabelStyle,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                        }
+                                        StatusPill(
+                                            text = "APK",
+                                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -261,8 +336,8 @@ fun StorageExplorerOverlay(
                                         }
                                         StatusPill(
                                             text = "LOAD",
-                                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                                         )
                                     }
                                 }
@@ -296,7 +371,7 @@ fun StorageExplorerOverlay(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Directory Browser",
+                                    text = "Mounted Folder Browser",
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onBackground
                                 )

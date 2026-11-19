@@ -3,6 +3,6 @@
     <item
         android:width="66dp"
         android:height="66dp"
-        android:drawable="@drawable/dexscope_icon_art_1794986129433"
+        android:drawable="@drawable/palometa_icon_art_1795108424199"
         android:gravity="center" />
 </layer-list>

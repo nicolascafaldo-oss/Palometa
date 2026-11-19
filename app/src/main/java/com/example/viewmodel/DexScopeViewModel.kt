@@ -10,6 +10,7 @@ import com.example.model.ApkAnalysis
 import com.example.model.DalvikInstruction
 import com.example.model.DexClassInfo
 import com.example.model.DexMethodInfo
+import com.example.model.DownloadApkItem
 import com.example.model.ElfAnalysis
 import com.example.model.ExportBundlePreview
 import com.example.model.ExportConfig
@@ -57,12 +58,13 @@ data class StorageExplorerState(
     val items: List<StorageDocumentItem> = emptyList(),
     val isBrowsing: Boolean = false,
     val apkOnlyFilter: Boolean = true,
+    val downloadsApks: List<DownloadApkItem> = emptyList(),
     val recentApks: List<RecentApkItem> = emptyList(),
     val browserError: String? = null
 )
 
 data class DexScopeUiState(
-    val darkTheme: Boolean = true,
+    val darkTheme: Boolean = false,
     val workspace: WorkspaceState = WorkspaceState.Empty,
     val storageExplorer: StorageExplorerState = StorageExplorerState(),
     val selectedDexIndex: Int = 0,
@@ -115,8 +117,50 @@ class DexScopeViewModel(application: Application) : AndroidViewModel(application
                 )
             )
         }
+        viewModelScope.launch {
+            val downloads = withContext(Dispatchers.IO) {
+                StorageExplorerHelper.scanAccessibleDownloads(ctx)
+            }
+            _uiState.update {
+                it.copy(storageExplorer = it.storageExplorer.copy(downloadsApks = downloads))
+            }
+        }
         if (treeUri != null) {
             browseFolder(treeUri, parentDocumentId = null, folderLabel = "Mounted Folder", resetTrail = true)
+        }
+    }
+
+    fun loadApkFromDownload(item: DownloadApkItem) {
+        if (item.uriString != null) {
+            runCatching { Uri.parse(item.uriString) }.getOrNull()?.let {
+                loadApkFromUri(it)
+                return
+            }
+        }
+        val path = item.filePath ?: return
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    workspace = WorkspaceState.Loading(item.name),
+                    storageExplorer = it.storageExplorer.copy(isOpen = false),
+                    selectedClass = null,
+                    classSmaliSource = "",
+                    selectedMethod = null,
+                    selectedElf = null,
+                    hexEntryPath = null,
+                    exportStatus = ExportStatus.Idle
+                )
+            }
+            try {
+                val session = withContext(Dispatchers.IO) {
+                    ApkArchiveParser.parseFromFilePath(getApplication(), path, item.name)
+                }
+                applySession(session)
+            } catch (t: Throwable) {
+                _uiState.update {
+                    it.copy(workspace = WorkspaceState.Error(t.message ?: "Failed to parse APK from Downloads."))
+                }
+            }
         }
     }
 

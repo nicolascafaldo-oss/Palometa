@@ -28,113 +28,113 @@ data class DexScopeSyntaxColors(
 
 val LocalDexScopeSyntax = staticCompositionLocalOf {
     DexScopeSyntaxColors(
-        opcode = SignalAmber,
-        register = PhosphorCyan,
-        stringLiteral = EmeraldMint,
-        nativeTag = CoralRed,
-        addressOffset = TextSecondaryDark,
-        dexSegment = PhosphorCyan,
-        elfSegment = CoralRed,
-        resourceSegment = SignalAmber,
-        otherSegment = VioletByte,
-        borderSubtle = HairlineBorder
+        opcode = MutedTangerine,
+        register = MutedCoralRed,
+        stringLiteral = MutedDustyPink,
+        nativeTag = MutedCoralRed,
+        addressOffset = WarmTaupeSecondary,
+        dexSegment = MutedCoralRed,
+        elfSegment = MutedDustyPink,
+        resourceSegment = MutedOchreYellow,
+        otherSegment = MutedPlumPurple,
+        borderSubtle = WarmLinenBorder
     )
 }
 
-private val DarkSyntaxColors = DexScopeSyntaxColors(
-    opcode = AmberSoft,
-    register = CyanSoft,
-    stringLiteral = EmeraldMint,
-    nativeTag = CoralRed,
-    addressOffset = TextSecondaryDark,
-    dexSegment = PhosphorCyan,
-    elfSegment = CoralRed,
-    resourceSegment = SignalAmber,
-    otherSegment = VioletByte,
-    borderSubtle = HairlineBorder
-)
-
 private val LightSyntaxColors = DexScopeSyntaxColors(
-    opcode = AmberLightSecondary,
-    register = CyanLightPrimary,
-    stringLiteral = EmeraldLightTertiary,
-    nativeTag = CoralLightError,
-    addressOffset = TextSecondaryLight,
-    dexSegment = CyanLightPrimary,
-    elfSegment = CoralLightError,
-    resourceSegment = AmberLightSecondary,
-    otherSegment = Color(0xFF7C3AED),
-    borderSubtle = LightBorder
+    opcode = MutedTangerine,
+    register = MutedCoralRed,
+    stringLiteral = MutedDustyPink,
+    nativeTag = MutedCoralRed,
+    addressOffset = WarmTaupeSecondary,
+    dexSegment = MutedCoralRed,
+    elfSegment = MutedDustyPink,
+    resourceSegment = MutedOchreYellow,
+    otherSegment = MutedPlumPurple,
+    borderSubtle = WarmLinenBorder
 )
 
-private val DexScopeDarkColorScheme = darkColorScheme(
-    primary = PhosphorCyan,
-    onPrimary = ObsidianBg,
-    primaryContainer = CyanMuted,
-    onPrimaryContainer = CyanSoft,
-    secondary = SignalAmber,
-    onSecondary = ObsidianBg,
-    secondaryContainer = AmberMuted,
-    onSecondaryContainer = AmberSoft,
-    tertiary = EmeraldMint,
-    onTertiary = ObsidianBg,
-    tertiaryContainer = EmeraldMuted,
-    onTertiaryContainer = EmeraldMint,
-    error = CoralRed,
-    onError = ObsidianBg,
-    errorContainer = CoralMuted,
-    onErrorContainer = CoralRed,
-    background = ObsidianBg,
-    onBackground = TextPrimaryDark,
-    surface = GraphiteSurface,
-    onSurface = TextPrimaryDark,
-    surfaceVariant = SlateElevated,
-    onSurfaceVariant = TextSecondaryDark,
-    outline = HairlineBorder,
-    outlineVariant = Color(0xFF21262D)
+private val DarkSyntaxColors = DexScopeSyntaxColors(
+    opcode = SoftApricotOrangeDark,
+    register = SoftCoralRedDark,
+    stringLiteral = SoftMustardYellowDark,
+    nativeTag = SoftRosePinkDark,
+    addressOffset = WarmSandTextDark,
+    dexSegment = SoftCoralRedDark,
+    elfSegment = SoftRosePinkDark,
+    resourceSegment = SoftMustardYellowDark,
+    otherSegment = SoftLavenderPlumDark,
+    borderSubtle = DuskBorder
 )
 
-private val DexScopeLightColorScheme = lightColorScheme(
-    primary = CyanLightPrimary,
+private val PalometaLightColorScheme = lightColorScheme(
+    primary = MutedCoralRed,
     onPrimary = Color.White,
-    primaryContainer = CyanLightContainer,
-    onPrimaryContainer = Color(0xFF0C4A6E),
-    secondary = AmberLightSecondary,
+    primaryContainer = CoralBlushContainer,
+    onPrimaryContainer = OnCoralBlush,
+    secondary = MutedTangerine,
     onSecondary = Color.White,
-    secondaryContainer = AmberLightContainer,
-    onSecondaryContainer = Color(0xFF78350F),
-    tertiary = EmeraldLightTertiary,
+    secondaryContainer = TangerineSoftContainer,
+    onSecondaryContainer = OnTangerineSoft,
+    tertiary = MutedDustyPink,
     onTertiary = Color.White,
-    tertiaryContainer = Color(0xFFD1FAE5),
-    onTertiaryContainer = Color(0xFF065F46),
-    error = CoralLightError,
+    tertiaryContainer = DustyPinkContainer,
+    onTertiaryContainer = OnDustyPink,
+    error = Color(0xFFB33F40),
     onError = Color.White,
-    errorContainer = Color(0xFFFFE4E6),
-    onErrorContainer = Color(0xFF9F1239),
-    background = LightCanvas,
-    onBackground = TextPrimaryLight,
-    surface = LightSurface,
-    onSurface = TextPrimaryLight,
-    surfaceVariant = LightElevated,
-    onSurfaceVariant = TextSecondaryLight,
-    outline = LightBorder,
-    outlineVariant = Color(0xFFE5E9F0)
+    errorContainer = Color(0xFFFAD6D6),
+    onErrorContainer = Color(0xFF5C1B1C),
+    background = WarmCreamBg,
+    onBackground = WarmInkPrimary,
+    surface = WarmIvorySurface,
+    onSurface = WarmInkPrimary,
+    surfaceVariant = WarmBlushElevated,
+    onSurfaceVariant = WarmTaupeSecondary,
+    outline = WarmLinenBorder,
+    outlineVariant = Color(0xFFECE0DA)
+)
+
+private val PalometaDarkColorScheme = darkColorScheme(
+    primary = SoftCoralRedDark,
+    onPrimary = DuskPlumBg,
+    primaryContainer = CoralContainerDark,
+    onPrimaryContainer = OnCoralContainerDark,
+    secondary = SoftApricotOrangeDark,
+    onSecondary = DuskPlumBg,
+    secondaryContainer = ApricotContainerDark,
+    onSecondaryContainer = OnApricotContainerDark,
+    tertiary = SoftRosePinkDark,
+    onTertiary = DuskPlumBg,
+    tertiaryContainer = RoseContainerDark,
+    onTertiaryContainer = OnRoseContainerDark,
+    error = SoftCoralRedDark,
+    onError = DuskPlumBg,
+    errorContainer = CoralContainerDark,
+    onErrorContainer = OnCoralContainerDark,
+    background = DuskPlumBg,
+    onBackground = WarmCreamTextDark,
+    surface = DuskCocoaSurface,
+    onSurface = WarmCreamTextDark,
+    surfaceVariant = DuskMauveElevated,
+    onSurfaceVariant = WarmSandTextDark,
+    outline = DuskBorder,
+    outlineVariant = Color(0xFF392D36)
 )
 
 val DexScopeShapes = Shapes(
-    extraSmall = RoundedCornerShape(6.dp),
-    small = RoundedCornerShape(8.dp),
-    medium = RoundedCornerShape(12.dp),
-    large = RoundedCornerShape(16.dp),
-    extraLarge = RoundedCornerShape(20.dp)
+    extraSmall = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(10.dp),
+    medium = RoundedCornerShape(14.dp),
+    large = RoundedCornerShape(18.dp),
+    extraLarge = RoundedCornerShape(22.dp)
 )
 
 @Composable
 fun DexScopeTheme(
-    darkTheme: Boolean = true,
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DexScopeDarkColorScheme else DexScopeLightColorScheme
+    val colorScheme = if (darkTheme) PalometaDarkColorScheme else PalometaLightColorScheme
     val syntaxColors = if (darkTheme) DarkSyntaxColors else LightSyntaxColors
 
     CompositionLocalProvider(LocalDexScopeSyntax provides syntaxColors) {

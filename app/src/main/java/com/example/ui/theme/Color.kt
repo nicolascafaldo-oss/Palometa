@@ -2,43 +2,52 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Dark SRE Terminal Palette
-val ObsidianBg = Color(0xFF0D1117)
-val GraphiteSurface = Color(0xFF161B22)
-val SlateElevated = Color(0xFF1F2630)
-val HairlineBorder = Color(0xFF2D3643)
+// Warm Editorial Palette: Muted Reds, Oranges, Yellows, Pinks, and Subtle Plum
 
-val PhosphorCyan = Color(0xFF38BDF8)
-val CyanMuted = Color(0xFF0C4A6E)
-val CyanSoft = Color(0xFF7DD3FC)
+// Light Theme (Warm Cream & Muted Sunset)
+val WarmCreamBg = Color(0xFFFBF6F3)
+val WarmIvorySurface = Color(0xFFFFFFFF)
+val WarmBlushElevated = Color(0xFFF3E8E3)
+val WarmLinenBorder = Color(0xFFE0CFC8)
 
-val SignalAmber = Color(0xFFF59E0B)
-val AmberMuted = Color(0xFF451A03)
-val AmberSoft = Color(0xFFFCD34D)
+val MutedCoralRed = Color(0xFFC45B56)
+val CoralBlushContainer = Color(0xFFFADBD8)
+val OnCoralBlush = Color(0xFF5E2220)
 
-val EmeraldMint = Color(0xFF34D399)
-val EmeraldMuted = Color(0xFF064E3B)
+val MutedTangerine = Color(0xFFD17A3E)
+val TangerineSoftContainer = Color(0xFFFBE3CE)
+val OnTangerineSoft = Color(0xFF613314)
 
-val CoralRed = Color(0xFFFB7185)
-val CoralMuted = Color(0xFF4C0519)
+val MutedDustyPink = Color(0xFFB96482)
+val DustyPinkContainer = Color(0xFFF7DCE5)
+val OnDustyPink = Color(0xFF592337)
 
-val VioletByte = Color(0xFFA78BFA)
+val MutedOchreYellow = Color(0xFFC59B38)
+val MutedPlumPurple = Color(0xFF855D8E)
 
-val TextPrimaryDark = Color(0xFFF0F6FC)
-val TextSecondaryDark = Color(0xFF8B949E)
+val WarmInkPrimary = Color(0xFF2B2124)
+val WarmTaupeSecondary = Color(0xFF6B595D)
 
-// Clean Light Lab Palette
-val LightCanvas = Color(0xFFF6F8FA)
-val LightSurface = Color(0xFFFFFFFF)
-val LightElevated = Color(0xFFEAEFF4)
-val LightBorder = Color(0xFFD0D7DE)
+// Dark Theme (Warm Dusk Plum — soft & muted, non-terminal)
+val DuskPlumBg = Color(0xFF1D171C)
+val DuskCocoaSurface = Color(0xFF271F25)
+val DuskMauveElevated = Color(0xFF332830)
+val DuskBorder = Color(0xFF473842)
 
-val CyanLightPrimary = Color(0xFF0284C7)
-val CyanLightContainer = Color(0xFFE0F2FE)
-val AmberLightSecondary = Color(0xFFD97706)
-val AmberLightContainer = Color(0xFFFEF3C7)
-val EmeraldLightTertiary = Color(0xFF059669)
-val CoralLightError = Color(0xFFE11D48)
+val SoftCoralRedDark = Color(0xFFE2847E)
+val CoralContainerDark = Color(0xFF562A29)
+val OnCoralContainerDark = Color(0xFFFCDAD7)
 
-val TextPrimaryLight = Color(0xFF1F2328)
-val TextSecondaryLight = Color(0xFF57606A)
+val SoftApricotOrangeDark = Color(0xFFE79F65)
+val ApricotContainerDark = Color(0xFF52331C)
+val OnApricotContainerDark = Color(0xFFFCE2C9)
+
+val SoftRosePinkDark = Color(0xFFE08CA8)
+val RoseContainerDark = Color(0xFF522838)
+val OnRoseContainerDark = Color(0xFFFADBE6)
+
+val SoftMustardYellowDark = Color(0xFFE4BF68)
+val SoftLavenderPlumDark = Color(0xFFB993C4)
+
+val WarmCreamTextDark = Color(0xFFF6EEEA)
+val WarmSandTextDark = Color(0xFFC1B1AC)

@@ -1,8 +1,13 @@
 package com.example.ui
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.provider.DocumentsContract
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -62,6 +67,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.R
+import com.example.parser.StorageExplorerHelper
 import com.example.ui.components.EmptyIntakeScreen
 import com.example.ui.components.ErrorWorkbenchScreen
 import com.example.ui.components.LoadingWorkbenchScreen
@@ -84,6 +90,23 @@ const val ROUTE_DEX = "dex"
 const val ROUTE_ELF = "elf"
 const val ROUTE_INSPECT = "inspect"
 const val ROUTE_EXPORT = "export"
+
+private class OpenApkFromDownloadsContract : ActivityResultContract<Unit, Uri?>() {
+    override fun createIntent(context: Context, input: Unit): Intent {
+        return Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                putExtra(DocumentsContract.EXTRA_INITIAL_URI, StorageExplorerHelper.DOWNLOADS_ROOT_URI)
+            }
+        }
+    }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+        return if (resultCode == Activity.RESULT_OK) intent?.data else null
+    }
+}
 
 private data class NavDestination(
     val route: String,
@@ -112,8 +135,8 @@ fun PalometaApp(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    val openApkLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument()
+    val openFromDownloadsLauncher = rememberLauncherForActivityResult(
+        contract = OpenApkFromDownloadsContract()
     ) { uri ->
         if (uri != null) {
             viewModel.loadApkFromUri(uri)
@@ -156,17 +179,6 @@ fun PalometaApp(
                 context.startActivity(Intent.createChooser(shareIntent, "Export Bundle to Workstation"))
             }
         }
-    }
-
-    val launchSystemFilePicker = {
-        openApkLauncher.launch(
-            arrayOf(
-                "application/vnd.android.package-archive",
-                "application/octet-stream",
-                "application/zip",
-                "*/*"
-            )
-        )
     }
 
     val showCopiedToast: (String) -> Unit = { label ->
@@ -430,9 +442,12 @@ fun PalometaApp(
                 StorageExplorerOverlay(
                     state = uiState.storageExplorer,
                     onClose = viewModel::closeStorageExplorer,
-                    onMountFolderClick = { openFolderTreeLauncher.launch(null) },
-                    onSystemFilePickerClick = launchSystemFilePicker,
+                    onDownloadsPickerClick = { openFromDownloadsLauncher.launch(Unit) },
+                    onMountFolderClick = {
+                        openFolderTreeLauncher.launch(StorageExplorerHelper.DOWNLOADS_DOCUMENT_URI)
+                    },
                     onInspectSelfClick = viewModel::loadSelfApk,
+                    onSelectDownloadItem = viewModel::loadApkFromDownload,
                     onSelectRecentUri = { uriStr ->
                         runCatching { Uri.parse(uriStr) }.getOrNull()?.let { viewModel.loadApkFromUri(it) }
                     },

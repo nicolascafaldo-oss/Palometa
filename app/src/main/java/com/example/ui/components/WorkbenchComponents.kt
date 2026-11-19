@@ -276,7 +276,7 @@ fun EmptyIntakeScreen(
                             .height(190.dp)
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.img_workbench_hero_1794986130115),
+                            painter = painterResource(id = R.drawable.img_piranha_hero_1795067799828),
                             contentDescription = stringResource(R.string.cd_hero_illustration),
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize()
@@ -288,7 +288,7 @@ fun EmptyIntakeScreen(
                                     Brush.verticalGradient(
                                         colors = listOf(
                                             Color.Transparent,
-                                            MaterialTheme.colorScheme.surface.copy(alpha = 0.92f)
+                                            MaterialTheme.colorScheme.surface.copy(alpha = 0.88f)
                                         )
                                     )
                                 )
@@ -307,7 +307,7 @@ fun EmptyIntakeScreen(
                                 modifier = Modifier.size(20.dp)
                             )
                             Text(
-                                text = "DEX · ELF · AXML · GHIDRA BRIDGE",
+                                text = "APK · SMALI · STRINGS · GHIDRA",
                                 style = MonoLabelStyle,
                                 color = MaterialTheme.colorScheme.primary
                             )
@@ -369,7 +369,7 @@ fun EmptyIntakeScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "WORKSTATION PIPELINE",
+                        text = "HOW PALOMETA WORKS",
                         style = MonoLabelStyle,
                         color = MaterialTheme.colorScheme.secondary
                     )

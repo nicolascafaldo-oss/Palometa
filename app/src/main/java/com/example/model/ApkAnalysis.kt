@@ -231,6 +231,13 @@ data class RecentApkItem(
     val sizeBytes: Long
 )
 
+data class DownloadApkItem(
+    val name: String,
+    val uriString: String?,
+    val filePath: String?,
+    val sizeBytes: Long
+)
+
 data class ExportConfig(
     val projectName: String,
     val includeDex: Boolean = true,
